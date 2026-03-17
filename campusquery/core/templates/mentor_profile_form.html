@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero reveal">
+    <h2>My Mentor Profile</h2>
+    <p class="muted">Keep your profile updated so students can discover your expertise.</p>
+</section>
+
+<section class="reveal">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="actions">
+            <button type="submit" class="btn">Save Profile</button>
+            <a href="{% url 'mentor_matching' %}" class="btn-ghost">Back to Mentors</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

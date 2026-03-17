@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero reveal">
+    <h2>Upload Note</h2>
+    <p class="muted">Share clean study material with your campus community.</p>
+    <span class="pill">PDF, DOC, DOCX, TXT, PPT, PPTX</span>
+</section>
+
+<section class="reveal">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="actions">
+            <button type="submit" class="btn btn-secondary">Upload</button>
+            <a href="{% url 'notes_list' %}" class="btn-ghost">Back to Notes</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

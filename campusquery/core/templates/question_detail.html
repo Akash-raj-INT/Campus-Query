@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero reveal">
+    <h2>{{ question.title }}</h2>
+    <p>{{ question.description }}</p>
+    <div class="row-meta">
+        <span>Posted by {{ question.user.username }}</span>
+        <span>{{ question.created_at }}</span>
+        <span>{{ question.comments.count }} comments</span>
+    </div>
+</section>
+
+<section class="stack">
+    <div class="section-title">
+        <h3>Solution Discussion</h3>
+        <span class="pill">Comments Only</span>
+    </div>
+    <input type="text" placeholder="Filter comments live..." data-live-filter=".comment-item">
+    {% for comment in question.comments.all %}
+        <article class="card reveal comment-item">
+            <p>{{ comment.content }}</p>
+            <div class="row-meta">
+                <span>{{ comment.user.username }}</span>
+                <span>{{ comment.created_at }}</span>
+            </div>
+        </article>
+    {% empty %}
+        <div class="empty">No comments yet. Be the first to explain the solution.</div>
+    {% endfor %}
+</section>
+
+<section class="stack reveal" style="margin-top: 16px;">
+    <h3>Add Comment</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <div class="actions">
+            <button type="submit" name="submit_comment" class="btn btn-secondary">Post Comment</button>
+            <a href="{% url 'home' %}" class="btn-ghost">Back to Dashboard</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

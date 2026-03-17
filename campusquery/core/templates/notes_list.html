@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero reveal">
+    <h2>Notes Library</h2>
+    <p class="muted">Browse shared material and download what you need.</p>
+    <div class="actions">
+        <a href="{% url 'upload_note' %}" class="btn">Upload New Note</a>
+    </div>
+</section>
+
+<input type="text" placeholder="Filter notes live..." data-live-filter=".note-item">
+
+<section class="stack" style="margin-top: 12px;">
+    {% for note in notes %}
+        <article class="card reveal note-item">
+            <div class="section-title">
+                <strong>{{ note.title }}</strong>
+                <span class="pill">{{ note.subject }}</span>
+            </div>
+            <div class="row-meta">
+                <span>Uploaded by {{ note.uploaded_by.username }}</span>
+                <span>{{ note.uploaded_at }}</span>
+            </div>
+            <div class="actions" style="margin-top: 8px;">
+                <a href="{{ note.file.url }}" download class="btn-ghost">Download</a>
+            </div>
+        </article>
+    {% empty %}
+        <div class="empty">No notes available.</div>
+    {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero reveal">
+    <h2>Sign Up</h2>
+    <p class="muted">Join the network to ask questions, share notes, and mentor others.</p>
+</section>
+
+<section class="reveal">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="actions">
+            <button type="submit" class="btn btn-secondary">Create Account</button>
+            <a href="{% url 'login' %}" class="btn-ghost">Already have an account?</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

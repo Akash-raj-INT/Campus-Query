@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero reveal">
+    <h2>Campus Dashboard</h2>
+    <p class="muted">Ask questions, share notes, and connect with mentors in one place.</p>
+    <form method="get" action="{% url 'search' %}">
+        <div class="actions">
+            <input type="text" name="q" placeholder="Search notes, questions, mentors" style="flex:1;">
+            <button type="submit" class="btn">Search</button>
+            <a href="{% url 'ask_question' %}" class="btn-ghost">Ask Question</a>
+        </div>
+    </form>
+</section>
+
+<div class="grid-2">
+    <section class="stack">
+        <div class="section-title">
+            <h3>Latest Questions</h3>
+            <span class="pill">{{ questions|length }} total</span>
+        </div>
+        {% for question in questions %}
+            <article class="card reveal">
+                <a href="{% url 'question_detail' question.id %}"><strong>{{ question.title }}</strong></a>
+                <p class="muted">{{ question.description|truncatechars:140 }}</p>
+                <div class="row-meta">
+                    <span>By {{ question.user.username }}</span>
+                    <span>{{ question.created_at }}</span>
+                    <span>{{ question.comments.count }} comments</span>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty">No questions yet.</div>
+        {% endfor %}
+    </section>
+
+    <section class="stack">
+        <div class="section-title">
+            <h3>Recent Notes</h3>
+            <a href="{% url 'notes_list' %}" class="btn-ghost">Open Notes</a>
+        </div>
+        {% for note in notes %}
+            <article class="card reveal">
+                <strong>{{ note.title }}</strong>
+                <p class="muted">{{ note.subject }}</p>
+                <div class="actions">
+                    <a href="{{ note.file.url }}" download class="btn-ghost">Download</a>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty">No notes uploaded yet.</div>
+        {% endfor %}
+
+        <div class="section-title">
+            <h3>Available Mentors</h3>
+            <a href="{% url 'mentor_matching' %}" class="btn-ghost">Find Mentors</a>
+        </div>
+        {% for mentor in mentors %}
+            <article class="card reveal">
+                <strong>{{ mentor.user.username }}</strong>
+                <p class="muted">{{ mentor.department }}</p>
+                <span class="pill">{{ mentor.expertise }}</span>
+            </article>
+        {% empty %}
+            <div class="empty">No mentors available right now.</div>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

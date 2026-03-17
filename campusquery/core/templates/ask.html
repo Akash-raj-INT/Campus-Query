@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero reveal">
+    <h2>Ask a Question</h2>
+    <p class="muted">Describe the problem clearly so mentors and peers can guide you faster.</p>
+</section>
+
+<section class="reveal">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="actions">
+            <button type="submit" class="btn">Post Question</button>
+            <a href="{% url 'home' %}" class="btn-ghost">Cancel</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

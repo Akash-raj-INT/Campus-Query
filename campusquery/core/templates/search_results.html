@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero reveal">
+    <h2>Search</h2>
+    <form method="get">
+        <div class="actions">
+            <input type="text" name="q" value="{{ query }}" placeholder="Search everything..." style="flex:1;">
+            <button type="submit" class="btn">Search</button>
+        </div>
+    </form>
+</section>
+
+{% if query %}
+    <div class="grid-2">
+        <section class="stack">
+            <h3>Notes</h3>
+            {% for note in notes %}
+                <article class="card reveal">
+                    <strong>{{ note.title }}</strong>
+                    <p class="muted">{{ note.subject }}</p>
+                </article>
+            {% empty %}
+                <div class="empty">No notes matched.</div>
+            {% endfor %}
+        </section>
+
+        <section class="stack">
+            <h3>Questions</h3>
+            {% for question in questions %}
+                <article class="card reveal">
+                    <a href="{% url 'question_detail' question.id %}"><strong>{{ question.title }}</strong></a>
+                    <p class="muted">{{ question.description|truncatechars:130 }}</p>
+                </article>
+            {% empty %}
+                <div class="empty">No questions matched.</div>
+            {% endfor %}
+        </section>
+    </div>
+
+    <section class="stack" style="margin-top: 14px;">
+        <h3>Mentors</h3>
+        {% for mentor in mentors %}
+            <article class="card reveal">
+                <strong>{{ mentor.user.username }}</strong>
+                <p class="muted">{{ mentor.department }} | {{ mentor.expertise }}</p>
+            </article>
+        {% empty %}
+            <div class="empty">No mentors matched.</div>
+        {% endfor %}
+    </section>
+{% else %}
+    <div class="empty">Enter a search term to get results.</div>
+{% endif %}
+{% endblock %}
