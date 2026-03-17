@@ -13,6 +13,29 @@
     </form>
 </section>
 
+<section class="quick-actions reveal">
+    <h3>Quick Start</h3>
+    <div class="grid-3">
+        <a href="{% url 'ask_question' %}" class="action-card">
+            <strong>🚀 Ask a question</strong>
+            <p>Create a new question and get help from peers.</p>
+        </a>
+        <a href="{% url 'upload_note' %}" class="action-card">
+            <strong>📄 Upload notes</strong>
+            <p>Share your study materials with the community.</p>
+        </a>
+        <a href="{% url 'mentor_matching' %}" class="action-card">
+            <strong>🎓 Find a mentor</strong>
+            <p>Connect with available mentors instantly.</p>
+        </a>
+    </div>
+</section>
+
+<section class="reveal">
+    <label for="localFilter"><strong>Quick filter on page content:</strong></label>
+    <input id="localFilter" type="text" placeholder="Type to filter questions, notes & mentors" />
+</section>
+
 <div class="grid-2">
     <section class="stack">
         <div class="section-title">

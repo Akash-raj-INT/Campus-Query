@@ -1,5 +1,6 @@
-from django.contrib.auth import login
+from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -21,6 +22,25 @@ def home(request):
         'home.html',
         {'questions': questions, 'notes': notes, 'mentors': mentors},
     )
+
+
+def custom_login(request):
+    form = AuthenticationForm(data=request.POST or None)
+    next_url = request.GET.get('next', '')
+
+    if request.method == 'POST':
+        form = AuthenticationForm(data=request.POST)
+        role = request.POST.get('role', 'student')
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            if role == 'teacher':
+                return redirect('mentor_matching')
+            if next_url:
+                return redirect(next_url)
+            return redirect('home')
+
+    return render(request, 'registration/login.html', {'form': form})
 
 @login_required
 def ask_question(request):
@@ -113,7 +133,7 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            auth_login(request, user)
             return redirect('home')
     else:
         form = SignUpForm()

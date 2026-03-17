@@ -10,6 +10,19 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
+
+        <fieldset>
+            <legend>Login as</legend>
+            <label>
+                <input type="radio" name="role" value="student" checked>
+                Student
+            </label>
+            <label>
+                <input type="radio" name="role" value="teacher">
+                Teacher
+            </label>
+        </fieldset>
+
         <div class="actions">
             <button type="submit" class="btn">Login</button>
             <a href="{% url 'signup' %}" class="btn-ghost">Create Account</a>
