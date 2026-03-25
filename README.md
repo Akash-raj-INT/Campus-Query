@@ -112,6 +112,12 @@ Computer Science Student | Full Stack Developer | Data Scientist
 
 ---
 
-## 📬 Contact
+## 🛠️ Deployment Notes (Added)
 
-For collaboration or queries, reach out via GitHub or email.
+- Procfile now uses `web: gunicorn campusquery.campusquery.wsgi`.
+- `runtime.txt` set to `python-3.11.9` for compatibility with deployment platforms.
+- Simplified `requirements.txt` to avoid dependency conflicts in Render/Vercel.
+
+---
+
+
