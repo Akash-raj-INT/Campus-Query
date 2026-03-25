@@ -1,1 +1,1 @@
-web: gunicorn campusquery.wsgi
+web: gunicorn campusquery.campusquery.wsgi
