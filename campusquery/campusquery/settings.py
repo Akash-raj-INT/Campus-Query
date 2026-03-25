@@ -18,16 +18,50 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+def get_env_list(name, default=""):
+    value = os.getenv(name, default)
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def get_env_bool(name, default=False):
+    value = os.getenv(name)
+    if value is None:
+        return default
+    normalized = value.strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
+RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME')
+ON_RENDER = get_env_bool('RENDER', False) or bool(RENDER_EXTERNAL_HOSTNAME)
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6i6n0d=sbm$s@lnf-n21&$)_%tr4eme3b6m82-(tsm9_7ud#a4'
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    if ON_RENDER:
+        raise RuntimeError('SECRET_KEY must be set in the environment for Render deployments.')
+    SECRET_KEY = 'django-insecure-6i6n0d=sbm$s@lnf-n21&$)_%tr4eme3b6m82-(tsm9_7ud#a4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = get_env_bool('DEBUG', default=not ON_RENDER)
 
-ALLOWED_HOSTS = ['*']  # in production, set specific host names
+ALLOWED_HOSTS = get_env_list('ALLOWED_HOSTS', '127.0.0.1,localhost')
+
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS))
+
+CSRF_TRUSTED_ORIGINS = [
+    f'https://{host}' for host in ALLOWED_HOSTS
+    if host not in {'127.0.0.1', 'localhost'} and '*' not in host
+]
 
 
 # Application definition
@@ -126,10 +160,22 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = get_env_bool('SECURE_SSL_REDIRECT', default=ON_RENDER and not DEBUG)
+SESSION_COOKIE_SECURE = get_env_bool('SESSION_COOKIE_SECURE', default=ON_RENDER and not DEBUG)
+CSRF_COOKIE_SECURE = get_env_bool('CSRF_COOKIE_SECURE', default=ON_RENDER and not DEBUG)
