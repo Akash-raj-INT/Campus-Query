@@ -1,123 +1,100 @@
-# CampusQuery – Unified Campus Knowledge Platform
+# CampusQuery
 
-CampusQuery is a Django-based web application designed for college students to share notes, ask questions, and collaborate in an organized way. It replaces unstructured WhatsApp groups with a centralized, searchable platform.
+CampusQuery is a Django web app for sharing notes, asking questions, and helping students collaborate in one searchable place.
 
----
+## Stack
 
-## 🚀 Features
+- Python 3.11
+- Django 5.2
+- Django REST Framework
+- PostgreSQL on Render
+- WhiteNoise for static files
 
-* 📂 Notes Upload & Download (Subject & Semester wise)
-* ❓ Q&A Forum with threaded answers
-* 🎯 Mentor Matching (Senior–Junior connection)
-* 🔍 Smart Search with filters
-* ⭐ Rating & Feedback System
-* 🔐 Secure Authentication (College Email आधारित)
+## Project Layout
 
----
+The Django project is nested inside the repository:
 
-## 🛠️ Tech Stack
-
-* **Backend:** Django (Python)
-* **Database:** PostgreSQL
-* **API:** Django REST Framework
-* **Frontend:** HTML, CSS, Bootstrap
-* **Authentication:** JWT / Django Auth
-
----
-
-## 📁 Project Structure
-
-```
+```text
 CampusQuery/
-│── manage.py
-│── requirements.txt
-│── README.md
-│
-├── campusquery/        # Main project settings
-├── users/              # Authentication & profiles
-├── notes/              # Notes management module
-├── qa_forum/           # Q&A system
-│
-├── templates/          # HTML templates
-├── static/             # CSS, JS, images
+|-- requirements.txt
+|-- Procfile
+|-- render.yaml
+`-- campusquery/
+    |-- manage.py
+    |-- db.sqlite3
+    |-- core/
+    `-- campusquery/
+        |-- settings.py
+        |-- urls.py
+        `-- wsgi.py
 ```
 
----
+## Local Setup
 
-## ⚙️ Installation & Setup
+1. Create and activate a virtual environment.
 
-1. Clone the repository
-
-```
-git clone https://github.com/your-username/CampusQuery.git
-cd CampusQuery
-```
-
-2. Create virtual environment
-
-```
+```powershell
 python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
+.\venv\Scripts\activate
 ```
 
-3. Install dependencies
+2. Install dependencies.
 
-```
+```powershell
 pip install -r requirements.txt
 ```
 
-4. Apply migrations
+3. Create your local environment variables from [`.env.example`](/c:/Users/ASUS/Desktop/Python%20Full%20Stack/CampusQuery/.env.example).
 
+```text
+SECRET_KEY=replace-me-with-a-long-random-secret
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
 ```
+
+4. Move into the Django app directory.
+
+```powershell
+cd campusquery
+```
+
+5. Run migrations.
+
+```powershell
 python manage.py migrate
 ```
 
-5. Run the server
+6. Start the development server.
 
-```
+```powershell
 python manage.py runserver
 ```
 
----
+## Render Deployment
 
-## 📊 Current Status
+This repo includes both [`Procfile`](/c:/Users/ASUS/Desktop/Python%20Full%20Stack/CampusQuery/Procfile) and [`render.yaml`](/c:/Users/ASUS/Desktop/Python%20Full%20Stack/CampusQuery/render.yaml) with the correct nested-directory commands.
 
-* ✅ User Authentication
-* ✅ Notes Management
-* ✅ Q&A Forum
-* 🚧 Study Groups (In Progress)
+Build command:
 
----
+```text
+cd campusquery && pip install -r ../requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+```
 
-## 🔮 Future Enhancements
+Start command:
 
-* Celery for background tasks
-* Elasticsearch for advanced search
-* Mobile API support
-* Admin analytics dashboard
+```text
+cd campusquery && gunicorn campusquery.wsgi --bind 0.0.0.0:$PORT
+```
 
----
+Set these Render environment variables:
 
-## 🤝 Contribution
+- `SECRET_KEY`
+- `DEBUG=False`
+- `ALLOWED_HOSTS=your-service.onrender.com`
+- `DATABASE_URL`
 
-Contributions are welcome!
-Feel free to fork the repo and submit pull requests.
+## Notes
 
----
-
-## 📌 Author
-
-**Akash Raj**
-Computer Science Student | Full Stack Developer | Data Scientist
-
----
-
-## 🛠️ Deployment Notes (Added)
-
-- Procfile now uses `web: gunicorn campusquery.campusquery.wsgi`.
-- `runtime.txt` set to `python-3.11.9` for compatibility with deployment platforms.
-- Simplified `requirements.txt` to avoid dependency conflicts in Render/Vercel.
-
----
-
-
+- `requirements.txt` is pinned for Python 3.11 compatibility on Render.
+- Render now requires `SECRET_KEY` to be set explicitly in the environment.
+- If your local virtualenv still has Django 6 installed, recreate it so local behavior matches deployment.

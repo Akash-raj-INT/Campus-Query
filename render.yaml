@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: campusquery
+    env: python
+    plan: free
+    buildCommand: cd campusquery && pip install -r ../requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+    startCommand: cd campusquery && gunicorn campusquery.wsgi --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false

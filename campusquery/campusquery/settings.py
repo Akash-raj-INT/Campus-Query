@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 import dj_database_url
 
@@ -40,11 +41,14 @@ def get_env_bool(name, default=False):
 
 RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 ON_RENDER = get_env_bool('RENDER', False) or bool(RENDER_EXTERNAL_HOSTNAME)
+MANAGEMENT_COMMAND = len(sys.argv) > 1 and sys.argv[0].endswith('manage.py')
+BUILD_SAFE_COMMANDS = {'collectstatic', 'migrate', 'makemigrations', 'check', 'showmigrations'}
+ALLOW_TEMP_SECRET_KEY = MANAGEMENT_COMMAND and any(cmd in sys.argv for cmd in BUILD_SAFE_COMMANDS)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 if not SECRET_KEY:
-    if ON_RENDER:
+    if ON_RENDER and not ALLOW_TEMP_SECRET_KEY:
         raise RuntimeError('SECRET_KEY must be set in the environment for Render deployments.')
     SECRET_KEY = 'django-insecure-6i6n0d=sbm$s@lnf-n21&$)_%tr4eme3b6m82-(tsm9_7ud#a4'
 
