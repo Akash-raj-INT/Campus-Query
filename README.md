@@ -1,7 +1,7 @@
 # CampusQuery
 
 CampusQuery is a Django web app for sharing notes, asking questions, and helping students collaborate in one searchable place.
-
+Open: https://campus-query-1.onrender.com/
 ## Stack
 
 - Python 3.11
